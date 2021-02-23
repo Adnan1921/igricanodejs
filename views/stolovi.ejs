@@ -1,0 +1,27 @@
+<%- include('partials/navbar') %>
+
+    <form method="post" action="/addstola">
+        <label for="stolovi">Rezervisi sto</label>
+        <br><select name="sto" id="sto">
+        <option value="veliki" name="stoVeliki">Veliki sto</option>
+        <option value="srenji" name="stoSrednji">Srednji sto</option>
+        <option value="mali" name="stoMali">Mali sto</option>
+    </select>
+
+        <br><label for="stolice">Broj stolica</label>
+        <br><select name="stolice" id="stolice">
+        <option value="jedna" name="stolicaJedna">1</option>
+        <option value="dvije" name="stoliceDvije">2</option>
+        <option value="tri" name="stoliceTri">3</option>
+        <option value="cetiri" name="stoliceCetiri">4</option>
+        </select>
+
+        <br><label for="vrsta">Vrsta stola</label>
+        <br><select name="vrsta" id="vrsta">
+        <option value="rucak" name="stoRucak">Rucak</option>
+        <option value="kafa" name="stoKafa">Kafa</option>
+        </select>
+            <br><input type="submit" value="Rezervisi"/>
+
+</form>
+    
