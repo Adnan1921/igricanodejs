@@ -1,5 +1,6 @@
 /*  EXPRESS SETUP  */
 
+
 const express = require('express');
 const app = express();
 app.set("view engine", "ejs");
@@ -11,6 +12,27 @@ const expressSession = require('express-session')({
   resave: false,
   saveUninitialized: false
 });
+const cookieSession = require('cookie-session')
+require('./passport')
+
+app.use(cookieSession({
+  name: 'facebook-auth-session',
+  keys: ['key1', 'key2']
+}))
+const passport = require('passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.get('/',(req,res)=>{
+  res.send(`Hello world ${req.user.displayName}`)
+})
+app.get('/auth/error', (req, res) => res.send('Unknown Error'))
+app.get('/auth/facebook',passport.authenticate('facebook'));
+app.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/login' }),
+function(req, res) {
+   res.redirect('/');
+});
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,20 +42,28 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('App listening on port ' + port));
 /*  PASSPORT SETUP  */
 
-const passport = require('passport');
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 /* MONGOOSE SETUP */
 
+ const {MongoClient} = require('mongodb');
 
-const mongoose = require('mongoose');
+
 const passportLocalMongoose = require('passport-local-mongoose');
 
-mongoose.connect('mongodb://localhost/MyDatabase',
-  { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoose = require('mongoose');
 
+const uri = 'mongodb+srv://Adnan1921:adnanbiberatlas@cluster0.0atn2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => {
+  console.log('MongoDB Connected…')
+})
+.catch(err => console.log(err))
 const Schema = mongoose.Schema;
 const UserDetail = new Schema({
   username: String,
@@ -96,6 +126,7 @@ app.get("/stolovi", (req, res) => {
 
 
 app.post("/addstola", (req, res) => {
+  console.log(req.body)
   var stoOptions = new Sto(req.body);
   stoOptions.save()
       .then(item => {
